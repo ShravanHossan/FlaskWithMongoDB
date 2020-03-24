@@ -10,14 +10,14 @@
 <body>
 	<h1>{{ h }}</h1>
 	<ul>
-		<li><a href="/list" class="{{ a1 }}">ALL</a></li>
-		<li><a href="/" class="{{ a2 }}">Uncompleted</a></li>
-		<li><a href="/completed" class="{{ a3 }}">Completed</a></li>
+		<li><a href="/api/todos/list" class="{{ a1 }}">ALL</a></li>
+		<li><a href="/api/todos/" class="{{ a2 }}">Uncompleted</a></li>
+		<li><a href="/api/todos/completed" class="{{ a3 }}">Completed</a></li>
 	</ul>
 	<hr>
 	{% if todos[0] %}
 	<div span="right">
-	<form action="/search"	method="GET" >
+	<form action="/api/todos/search"	method="GET" >
 		<table class="none" id="close">
 		<tr>
 		<td></td><td></td>
@@ -47,13 +47,13 @@
 	    </tr>
 	{% for todo in todos %}
 		<tr class="datas">
-			<td><a href="./done?_id={{ todo['_id'] }}"><input type="image" src="static/images/{{todo['done']}}.png" alt="Submit ME"></a></td>
+			<td><a href="./api/todos/done?_id={{ todo['_id'] }}"><input type="image" src="static/images/{{todo['done']}}.png" alt="Submit ME"></a></td>
 			<td class="name">{{ todo["name"] }}</td>
 			<td class="desc">{{ todo["desc"] }}</td>
 			<td class="date">{{ todo["date"] }}</td>
 			<td class="pr">{{ todo["pr"] }}</td>
-			<td class="func1"><a href="./remove?_id={{ todo['_id'] }}"><button type="submit">DELETE</button></a></td>
-			<td class="func1"><a href="./update?_id={{ todo['_id'] }}"><button type="submit">EDIT</button></a></td>
+			<td class="func1"><a href="./api/todos/remove?_id={{ todo['_id'] }}"><button type="submit">DELETE</button></a></td>
+			<td class="func1"><a href="./api/todos/update?_id={{ todo['_id'] }}"><button type="submit">EDIT</button></a></td>
 		</tr>
 	{% endfor %}
 	</table>
@@ -61,7 +61,7 @@
 		<h4>No Tasks in the List !!</h4>
 	{% endif %}
 	<hr/>
-	<form action="/action" method="POST">
+	<form action="/api/todos/action" method="POST">
 	<table class="none">
 		<tr>
 			<td><b><big><label>Add a Task : </label></big></b></td>

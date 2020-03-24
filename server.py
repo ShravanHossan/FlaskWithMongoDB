@@ -1,22 +1,18 @@
 from flask import Flask, render_template,request,redirect,url_for # For flask implementation
 from bson import ObjectId # For ObjectId to work
-from pymongo import MongoClient
+from config.database import todos
 import os
-
+port = os.environ['FLASK_PORT']
 app = Flask(__name__)
 title = "TODO sample application with Flask and MongoDB"
 heading = "TODO Reminder with Flask and MongoDB"
-
-client = MongoClient("mongodb://127.0.0.1:27017") #host uri
-db = client.mymongodb    #Select the database
-todos = db.todo #Select the collection name
 
 def redirect_url():
     return request.args.get('next') or \
            request.referrer or \
            url_for('index')
 
-@app.route("/list")
+@app.route("/api/todos/list")
 def lists ():
 	#Display the all Tasks
 	todos_l = todos.find()
@@ -24,7 +20,7 @@ def lists ():
 	return render_template('index.html',a1=a1,todos=todos_l,t=title,h=heading)
 
 @app.route("/")
-@app.route("/uncompleted")
+@app.route("/api/todos/uncompleted")
 def tasks ():
 	#Display the Uncompleted Tasks
 	todos_l = todos.find({"done":"no"})
@@ -32,14 +28,14 @@ def tasks ():
 	return render_template('index.html',a2=a2,todos=todos_l,t=title,h=heading)
 
 
-@app.route("/completed")
+@app.route("/api/todos/completed")
 def completed ():
 	#Display the Completed Tasks
 	todos_l = todos.find({"done":"yes"})
 	a3="active"
 	return render_template('index.html',a3=a3,todos=todos_l,t=title,h=heading)
 
-@app.route("/done")
+@app.route("/api/todos/done")
 def done ():
 	#Done-or-not ICON
 	id=request.values.get("_id")
@@ -52,7 +48,7 @@ def done ():
 
 	return redirect(redir)
 
-@app.route("/action", methods=['POST'])
+@app.route("/api/todos/action", methods=['POST'])
 def action ():
 	#Adding a Task
 	name=request.values.get("name")
@@ -60,9 +56,9 @@ def action ():
 	date=request.values.get("date")
 	pr=request.values.get("pr")
 	todos.insert({ "name":name, "desc":desc, "date":date, "pr":pr, "done":"no"})
-	return redirect("/list")
+	return redirect("/api/todos/list")
 
-@app.route("/remove")
+@app.route("/api/todos/remove")
 def remove ():
 	#Deleting a Task with various references
 	key=request.values.get("_id")
@@ -75,7 +71,7 @@ def update ():
 	task=todos.find({"_id":ObjectId(id)})
 	return render_template('update.html',tasks=task,h=heading,t=title)
 
-@app.route("/action3", methods=['POST'])
+@app.route("/api/todos/action3", methods=['POST'])
 def action3 ():
 	#Updating a Task with various references
 	name=request.values.get("name")
@@ -86,7 +82,7 @@ def action3 ():
 	todos.update({"_id":ObjectId(id)}, {'$set':{ "name":name, "desc":desc, "date":date, "pr":pr }})
 	return redirect("/")
 
-@app.route("/search", methods=['GET'])
+@app.route("/api/todos/search", methods=['GET'])
 def search():
 	#Searching a Task with various references
 
@@ -100,4 +96,4 @@ def search():
 
 if __name__ == "__main__":
 
-    app.run()
+    app.run(host='0.0.0.0', port=port)
