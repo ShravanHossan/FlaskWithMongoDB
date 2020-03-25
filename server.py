@@ -15,7 +15,7 @@ def redirect_url():
            request.referrer or \
            url_for('index')
 
-@app.route("/api/todos/list")
+@app.route("/list")
 def lists ():
 	#Display the all Tasks
 	todos_l = todos.find()
@@ -23,7 +23,7 @@ def lists ():
 	return render_template('index.html',a1=a1,todos=todos_l,t=title,h=heading)
 
 @app.route("/")
-@app.route("/api/todos/uncompleted")
+@app.route("/uncompleted")
 def tasks ():
 	#Display the Uncompleted Tasks
 	todos_l = todos.find({"done":"no"})
@@ -31,14 +31,14 @@ def tasks ():
 	return render_template('index.html',a2=a2,todos=todos_l,t=title,h=heading)
 
 
-@app.route("/api/todos/completed")
+@app.route("/completed")
 def completed ():
 	#Display the Completed Tasks
 	todos_l = todos.find({"done":"yes"})
 	a3="active"
 	return render_template('index.html',a3=a3,todos=todos_l,t=title,h=heading)
 
-@app.route("/api/todos/done")
+@app.route("/done")
 def done ():
 	#Done-or-not ICON
 	id=request.values.get("_id")
@@ -51,7 +51,7 @@ def done ():
 
 	return redirect(redir)
 
-@app.route("/api/todos/action", methods=['POST'])
+@app.route("/action", methods=['POST'])
 def action ():
 	#Adding a Task
 	name=request.values.get("name")
@@ -59,9 +59,9 @@ def action ():
 	date=request.values.get("date")
 	pr=request.values.get("pr")
 	todos.insert({ "name":name, "desc":desc, "date":date, "pr":pr, "done":"no"})
-	return redirect("/api/todos/list")
+	return redirect("/list")
 
-@app.route("/api/todos/remove")
+@app.route("/remove")
 def remove ():
 	#Deleting a Task with various references
 	key=request.values.get("_id")
@@ -74,7 +74,7 @@ def update ():
 	task=todos.find({"_id":ObjectId(id)})
 	return render_template('update.html',tasks=task,h=heading,t=title)
 
-@app.route("/api/todos/action3", methods=['POST'])
+@app.route("/action3", methods=['POST'])
 def action3 ():
 	#Updating a Task with various references
 	name=request.values.get("name")
@@ -85,7 +85,7 @@ def action3 ():
 	todos.update({"_id":ObjectId(id)}, {'$set':{ "name":name, "desc":desc, "date":date, "pr":pr }})
 	return redirect("/")
 
-@app.route("/api/todos/search", methods=['GET'])
+@app.route("/search", methods=['GET'])
 def search():
 	#Searching a Task with various references
 
