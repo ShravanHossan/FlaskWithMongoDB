@@ -1,10 +1,10 @@
-import os
-import sys
-sys.path.insert(0, 'config/')
 from flask import Flask, render_template,request,redirect,url_for # For flask implementation
 from bson import ObjectId # For ObjectId to work
-from config import database
-todos = database.todos
+from database import todos
+import os
+import sys
+
+
 port = os.environ['FLASK_PORT']
 app = Flask(__name__)
 title = "TODO sample application with Flask and MongoDB"
